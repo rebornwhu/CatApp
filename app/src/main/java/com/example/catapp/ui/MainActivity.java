@@ -20,6 +20,4 @@ public class MainActivity extends ActionBarActivity {
         ApiImp api = new ApiImp();
         new CatsHelper(api).saveTheCutestCat("some query");
     }
-
-
 }
