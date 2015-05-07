@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.catapp.api.Api;
+import com.example.catapp.api.ApiWrapper;
 import com.example.catapp.model.Cat;
 
 import java.util.Collections;
@@ -14,7 +15,9 @@ import java.util.List;
  */
 public class CatsHelper {
     private static final String TAG = "CatsHelper";
-    Api api;
+
+    //Api api;
+    ApiWrapper apiWrapper;
 
     public interface CutestCatCallback {
         void onCutestCatSaved(Uri uri);
