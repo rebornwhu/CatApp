@@ -16,16 +16,30 @@ public class CatsHelper {
     private static final String TAG = "CatsHelper";
     Api api;
 
+    public interface CutestCatCallback {
+        void onCutestCatSaved(Uri uri);
+        void onQueryFailed(Exception e);
+    }
+
     public CatsHelper(Api api) {
         this.api = api;
     }
 
-    public Uri saveTheCutestCat(String query) {
-        List<Cat> cats = api.queryCats(query);
-        Cat cutest = findCutest(cats);
-        Log.i(TAG, cutest.toString());
-        Uri savedUri = api.store(cutest);
-        return savedUri;
+    public void saveTheCutestCat(String query, final CutestCatCallback cutestCatCallback) {
+        api.queryCats(query, new Api.CatsQueryCallback() {
+            @Override
+            public void onCatListReceived(List<Cat> cats) {
+                Cat cutest = findCutest(cats);
+                Log.i(TAG, cutest.toString());
+                Uri savedUri = api.store(cutest);
+                cutestCatCallback.onCutestCatSaved(savedUri);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                cutestCatCallback.onQueryFailed(e);
+            }
+        });
     }
 
     private Cat findCutest(List<Cat> cats) {

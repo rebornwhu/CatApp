@@ -1,5 +1,6 @@
 package com.example.catapp.ui;
 
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +19,16 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         ApiImp api = new ApiImp();
-        new CatsHelper(api).saveTheCutestCat("some query");
+        new CatsHelper(api).saveTheCutestCat("some query", new CatsHelper.CutestCatCallback() {
+            @Override
+            public void onCutestCatSaved(Uri uri) {
+
+            }
+
+            @Override
+            public void onQueryFailed(Exception e) {
+
+            }
+        });
     }
 }

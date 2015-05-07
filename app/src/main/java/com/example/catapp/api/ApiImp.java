@@ -12,9 +12,23 @@ import java.util.List;
  */
 public class ApiImp implements Api {
 
+    @Override
+    public void queryCats(String query, CatsQueryCallback catsQueryCallback) {
+        try {
+            List<Cat> list = queryCats(query);
+            catsQueryCallback.onCatListReceived(list);
+        } catch (Exception e) {
+            catsQueryCallback.onError(e);
+        }
+    }
 
     @Override
-    public List<Cat> queryCats(String query) {
+    public Uri store(Cat cat) {
+        sleep(1500);
+        return null;
+    }
+
+    private List<Cat> queryCats(String query) {
         sleep(3000);
         ArrayList<Cat> list = new ArrayList<Cat>();
         list.add(new Cat("Grumpy Cat", 10));
@@ -22,12 +36,6 @@ public class ApiImp implements Api {
         list.add(new Cat("Smokey", 8));
         list.add(new Cat("Whiskers", 7));
         return list;
-    }
-
-    @Override
-    public Uri store(Cat cat) {
-        sleep(1500);
-        return null;
     }
 
     private static void sleep(int miliseconds) {
