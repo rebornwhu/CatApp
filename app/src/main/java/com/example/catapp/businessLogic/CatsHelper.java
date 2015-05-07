@@ -3,8 +3,8 @@ package com.example.catapp.businessLogic;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.catapp.api.Api;
 import com.example.catapp.api.ApiWrapper;
+import com.example.catapp.api.Callback;
 import com.example.catapp.model.Cat;
 
 import java.util.Collections;
@@ -16,7 +16,6 @@ import java.util.List;
 public class CatsHelper {
     private static final String TAG = "CatsHelper";
 
-    //Api api;
     ApiWrapper apiWrapper;
 
     public interface CutestCatCallback {
@@ -24,33 +23,21 @@ public class CatsHelper {
         void onError(Exception e);
     }
 
-    public CatsHelper(Api api) {
-        this.api = api;
+    public CatsHelper(ApiWrapper apiWrapper) {
+        this.apiWrapper = apiWrapper;
     }
 
-    public void saveTheCutestCat(String query, final CutestCatCallback cutestCatCallback) {
-        api.queryCats(query, new Api.CatsQueryCallback() {
+    public void saveTheCutestCat(String query, final Callback<Uri> cutestCatCallback){
+        apiWrapper.queryCats(query, new Callback<List<Cat>>() {
             @Override
-            public void onCatListReceived(List<Cat> cats) {
+            public void onResult(List<Cat> cats) {
                 Cat cutest = findCutest(cats);
                 Log.i(TAG, cutest.toString());
-
-                api.store(cutest, new Api.StoreCallback() {
-                    @Override
-                    public void onCatStored(Uri uri) {
-                        cutestCatCallback.onCutestCatSaved(uri);
-                    }
-
-                    @Override
-                    public void onStoreFailed(Exception e) {
-                        cutestCatCallback.onError(e);
-                    }
-                });
-
+                apiWrapper.store(cutest, cutestCatCallback);
             }
 
             @Override
-            public void onQueryFailed(Exception e) {
+            public void onError(Exception e) {
                 cutestCatCallback.onError(e);
             }
         });

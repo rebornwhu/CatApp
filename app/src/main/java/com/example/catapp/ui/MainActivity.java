@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 import com.example.catapp.R;
 import com.example.catapp.api.ApiImp;
+import com.example.catapp.api.ApiWrapper;
+import com.example.catapp.api.Callback;
 import com.example.catapp.businessLogic.CatsHelper;
 
 
@@ -18,10 +20,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ApiImp api = new ApiImp();
-        new CatsHelper(api).saveTheCutestCat("some query", new CatsHelper.CutestCatCallback() {
+        ApiWrapper apiWrapper = new ApiWrapper(new ApiImp());
+        new CatsHelper(apiWrapper).saveTheCutestCat("some query", new Callback<Uri>() {
             @Override
-            public void onCutestCatSaved(Uri uri) {
+            public void onResult(Uri result) {
 
             }
 

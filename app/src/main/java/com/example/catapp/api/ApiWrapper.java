@@ -12,7 +12,11 @@ import java.util.List;
 public class ApiWrapper {
     Api api;
 
-    public void queryCat(String query, final Callback<List<Cat>> catsCallback) {
+    public ApiWrapper(Api api) {
+        this.api = api;
+    }
+
+    public void queryCats(String query, final Callback<List<Cat>> catsCallback) {
         api.queryCats(query, new Api.CatsQueryCallback() {
             @Override
             public void onCatListReceived(List<Cat> cats) {
