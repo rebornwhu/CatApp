@@ -47,7 +47,7 @@ public class CatsHelper {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onQueryFailed(Exception e) {
                 cutestCatCallback.onError(e);
             }
         });

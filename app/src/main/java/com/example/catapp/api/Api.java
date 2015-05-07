@@ -12,7 +12,7 @@ import java.util.List;
 public interface Api {
     interface CatsQueryCallback {
         void onCatListReceived(List<Cat> cats);
-        void onError(Exception e);
+        void onQueryFailed(Exception e);
     }
 
     interface StoreCallback {

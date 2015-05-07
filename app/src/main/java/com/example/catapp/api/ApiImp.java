@@ -18,7 +18,7 @@ public class ApiImp implements Api {
             List<Cat> list = queryCats(query);
             catsQueryCallback.onCatListReceived(list);
         } catch (Exception e) {
-            catsQueryCallback.onError(e);
+            catsQueryCallback.onQueryFailed(e);
         }
     }
 
