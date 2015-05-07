@@ -23,6 +23,15 @@ public class ApiImp implements Api {
     }
 
     @Override
+    public void store(Cat cat, StoreCallback storeCallback) {
+        try {
+            Uri uri = store(cat);
+            storeCallback.onCatStored(uri);
+        } catch (Exception e) {
+            storeCallback.onStoreFailed(e);
+        }
+    }
+
     public Uri store(Cat cat) {
         sleep(1500);
         return null;

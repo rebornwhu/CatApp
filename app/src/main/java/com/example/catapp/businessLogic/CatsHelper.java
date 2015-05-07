@@ -18,7 +18,7 @@ public class CatsHelper {
 
     public interface CutestCatCallback {
         void onCutestCatSaved(Uri uri);
-        void onQueryFailed(Exception e);
+        void onError(Exception e);
     }
 
     public CatsHelper(Api api) {
@@ -31,13 +31,24 @@ public class CatsHelper {
             public void onCatListReceived(List<Cat> cats) {
                 Cat cutest = findCutest(cats);
                 Log.i(TAG, cutest.toString());
-                Uri savedUri = api.store(cutest);
-                cutestCatCallback.onCutestCatSaved(savedUri);
+
+                api.store(cutest, new Api.StoreCallback() {
+                    @Override
+                    public void onCatStored(Uri uri) {
+                        cutestCatCallback.onCutestCatSaved(uri);
+                    }
+
+                    @Override
+                    public void onStoreFailed(Exception e) {
+                        cutestCatCallback.onError(e);
+                    }
+                });
+
             }
 
             @Override
             public void onError(Exception e) {
-                cutestCatCallback.onQueryFailed(e);
+                cutestCatCallback.onError(e);
             }
         });
     }

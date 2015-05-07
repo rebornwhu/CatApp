@@ -26,7 +26,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onQueryFailed(Exception e) {
+            public void onError(Exception e) {
 
             }
         });
