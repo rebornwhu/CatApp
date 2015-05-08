@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.catapp.api.ApiWrapper;
 import com.example.catapp.api.Callback;
+import com.example.catapp.async.AsyncJob;
+import com.example.catapp.async.Func;
 import com.example.catapp.model.Cat;
 
 import java.util.Collections;
@@ -18,29 +20,29 @@ public class CatsHelper {
 
     ApiWrapper apiWrapper;
 
-    public interface CutestCatCallback {
-        void onCutestCatSaved(Uri uri);
-        void onError(Exception e);
-    }
 
     public CatsHelper(ApiWrapper apiWrapper) {
         this.apiWrapper = apiWrapper;
     }
 
-    public void saveTheCutestCat(String query, final Callback<Uri> cutestCatCallback){
-        apiWrapper.queryCats(query, new Callback<List<Cat>>() {
+    public AsyncJob<Uri> saveTheCutestCat(String query, Callback<Uri> uriCallback) {
+        AsyncJob<List<Cat>> catsListAsyncJob = apiWrapper.queryCats(query);
+        AsyncJob<Cat> cutestCatAsyncJob = catsListAsyncJob.map(new Func<List<Cat>, Cat>() {
             @Override
-            public void onResult(List<Cat> cats) {
-                Cat cutest = findCutest(cats);
-                Log.i(TAG, cutest.toString());
-                apiWrapper.store(cutest, cutestCatCallback);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                cutestCatCallback.onError(e);
+            public Cat call(List<Cat> cats) {
+                Cat cutestCat = findCutest(cats);
+                Log.i(TAG, cutestCat.toString());
+                return cutestCat;
             }
         });
+
+        AsyncJob<Uri> storedUriAsyncJob = cutestCatAsyncJob.flatMap(new Func<Cat, AsyncJob<Uri>>() {
+            @Override
+            public AsyncJob<Uri> call(Cat cat) {
+                return apiWrapper.store(cat);
+            }
+        });
+        return storedUriAsyncJob;
     }
 
     private Cat findCutest(List<Cat> cats) {
